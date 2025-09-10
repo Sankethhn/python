@@ -286,5 +286,5 @@ with open("students.txt", "r") as file:
 4. **Search From File**
 
    * Write a program that searches for a name in `friends.txt`
-   * If found, print "Found!" else "Not Found!"
+   * If found, print "Found!" else "Not Found!!"
 

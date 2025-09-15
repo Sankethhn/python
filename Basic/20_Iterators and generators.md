@@ -1,0 +1,239 @@
+# Iterators and Generators in Python
+
+
+## 1. What is an Iterator?
+
+* An **iterator** is an object that allows you to traverse through a sequence (like list, tuple, string) **one element at a time**.
+* Behind the scenes, Python uses two special methods:
+
+  * `__iter__()` → returns the iterator object.
+  * `__next__()` → returns the next item from the sequence.
+
+📌 **Example 1: Iterating a list**
+
+```python
+numbers = [1, 2, 3]
+
+# Get iterator from list
+it = iter(numbers)
+
+print(next(it))  # 1
+print(next(it))  # 2
+print(next(it))  # 3
+# print(next(it))  # Raises StopIteration
+```
+
+⚡ Important:
+When there are no more items, Python raises a **StopIteration** error.
+
+---
+
+## 2. Using Iterators with Loops
+
+* Normally, we don’t call `next()` manually.
+* Python’s **for loop** internally uses iterators.
+
+📌 **Example 2:**
+
+```python
+for num in [1, 2, 3]:
+    print(num)
+```
+
+➡ This does the same thing as creating an iterator and calling `next()` repeatedly.
+
+---
+
+## 3. Creating Your Own Iterator
+
+You can define your own class and implement `__iter__()` and `__next__()`.
+
+📌 **Example 3: Custom Iterator**
+
+```python
+class CountDown:
+    def __init__(self, start):
+        self.start = start
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.start <= 0:
+            raise StopIteration
+        num = self.start
+        self.start -= 1
+        return num
+
+cd = CountDown(5)
+
+for i in cd:
+    print(i)
+```
+
+✅ Output:
+
+```
+5
+4
+3
+2
+1
+```
+
+---
+
+## 4. Generators in Python
+
+* Writing iterators manually can be **complex**.
+* Python provides **generators** to make this easy.
+* A **generator** is a function that uses the keyword **`yield`** instead of `return`.
+
+📌 **Example 4: Generator Function**
+
+```python
+def simple_gen():
+    yield 1
+    yield 2
+    yield 3
+
+gen = simple_gen()
+print(next(gen))  # 1
+print(next(gen))  # 2
+print(next(gen))  # 3
+```
+
+➡ Each time `yield` is hit, the function **pauses** and saves its state, resuming when `next()` is called again.
+
+---
+
+## 5. Generators with Loops
+
+* Generators are often used with `for` loops.
+
+📌 **Example 5:**
+
+```python
+def squares(n):
+    for i in range(n):
+        yield i * i
+
+for val in squares(5):
+    print(val)
+```
+
+✅ Output:
+
+```
+0
+1
+4
+9
+16
+```
+
+---
+
+## 6. Generator Expressions
+
+* Like list comprehensions, but use `()` instead of `[]`.
+* They are **memory-efficient** because values are generated on the fly.
+
+📌 **Example 6:**
+
+```python
+gen_exp = (x*x for x in range(5))
+print(next(gen_exp))  # 0
+print(next(gen_exp))  # 1
+print(list(gen_exp))  # [4, 9, 16]
+```
+
+---
+
+## 7. Difference Between Iterators and Generators
+
+| Feature        | Iterators (Custom Class)             | Generators (`yield`)           |
+| -------------- | ------------------------------------ | ------------------------------ |
+| Implementation | Need to write `__iter__`, `__next__` | Just use `yield` in a function |
+| Memory Usage   | Can be heavy (store state manually)  | Very memory efficient          |
+| Ease of Use    | Verbose, more code                   | Very concise                   |
+| Example        | Countdown class                      | `squares(n)` function          |
+
+---
+
+## 8. Real-Life Use Cases
+
+* **Large data processing** (files, logs, streaming data).
+* **Pipelines** (processing one item at a time).
+* **Infinite sequences** (e.g., Fibonacci, natural numbers).
+
+📌 **Example 7: Infinite Generator**
+
+```python
+def infinite_numbers():
+    num = 1
+    while True:
+        yield num
+        num += 1
+
+gen = infinite_numbers()
+for i in range(5):
+    print(next(gen))
+```
+
+✅ Output:
+
+```
+1
+2
+3
+4
+5
+```
+
+---
+
+## ✨ Summary
+
+* **Iterators** = objects that follow `__iter__()` and `__next__()`.
+* **Generators** = simple way to create iterators using `yield`.
+* **Generator expressions** = memory-efficient, on-demand sequences.
+* Very useful in handling **large datasets**, **streams**, and **infinite sequences**.
+
+---
+
+## 📝 Homework
+### **Part A — Iterators**
+
+1. **Manual Iteration**
+
+   * Create a list of 5 Kannada movie names.
+   * Use `iter()` and `next()` to print each movie name one by one manually (without using a `for` loop).
+
+2. **Custom Iterator Class**
+
+   * Write a class `EvenNumbers` that takes a limit `n` and returns all even numbers from `0` to `n` (inclusive) using the `__iter__()` and `__next__()` methods.
+
+3. **Iterator Consumption**
+
+   * Show that an iterator can be used only once.
+   * Create an iterator from a tuple, iterate over it completely, and then try iterating again. Explain what happens.
+
+---
+
+### **Part B — Generators**
+
+4. **Simple Generator Function**
+
+   * Write a generator function `countdown(n)` that yields numbers from `n` to `0`.
+   * Test it using a `for` loop.
+
+5. **Generator Expression**
+
+   * Create a generator expression to produce the squares of numbers from 1 to 10.
+   * Print the first 5 values using `next()`.
+
+6. **Memory Efficiency**
+
+   * Create a list comprehension and a generator expression that both generate numbers from 1 to 1000000.
+   * Use `sys.getsizeof()` to print their sizes and compare.
